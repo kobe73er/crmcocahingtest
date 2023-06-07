@@ -1,7 +1,7 @@
 def scmVars
 pipeline {
     environment {
-        DOCKER_KEY = credentials('acrtoken')
+        DOCKER_KEY = credentials('ecr_token')
     }
 
     agent {
@@ -11,7 +11,7 @@ pipeline {
                 kind: Pod
                 metadata:
                   name: jenkins-agent
-                  namespace: devstack
+                  namespace: jenkins
                 spec:
                   containers:
                   - name: docker
@@ -37,7 +37,7 @@ pipeline {
                     script {
                           scmVars = checkout([$class: 'GitSCM',
                               branches: [[name: 'master']],
-                              userRemoteConfigs: [[url: 'git@github.com:kobe73er/crmcocahingtest.git']]
+                              userRemoteConfigs: [[url: 'https://github.com/kobe73er/crmcocahingtest.git']]
                           ])
 
 
@@ -52,7 +52,7 @@ pipeline {
             steps {
                 container('docker') {
                     sh '''
-                    docker build -t fastapi:''' + scmVars.GIT_COMMIT + ''' .
+                    docker build -t nestjs-docker:''' + scmVars.GIT_COMMIT + ''' .
                     '''
                 }
             }
@@ -62,7 +62,7 @@ pipeline {
             steps {
                 container('docker') {
                     sh '''
-                    echo "${DOCKER_KEY}" | docker login omsdevops.azurecr.io --username 00000000-0000-0000-0000-000000000000 --password-stdin
+                    echo "${DOCKER_KEY}" | docker login --username AWS --password-stdin 114018177393.dkr.ecr.us-east-2.amazonaws.com
                     '''
                 }
             }
@@ -72,19 +72,20 @@ pipeline {
             steps {
                 container('docker') {
                     sh '''
-                    docker tag fastapi:''' + scmVars.GIT_COMMIT + ''' omsdevops.azurecr.io/fastapi:''' + scmVars.GIT_COMMIT + '''
-                    docker tag fastapi:''' + scmVars.GIT_COMMIT + ''' omsdevops.azurecr.io/fastapi:latest
+                    docker tag nestjs-docker:''' + scmVars.GIT_COMMIT + ''' 114018177393.dkr.ecr.us-east-2.amazonaws.com/nestjs-docker:''' + scmVars.GIT_COMMIT + '''
+                    docker tag nestjs-docker:''' + scmVars.GIT_COMMIT + ''' 114018177393.dkr.ecr.us-east-2.amazonaws.com/nestjs-docker:latest
                     '''
                 }
             }
         }
 
-        stage('Push-Images-Docker-to-DockerHub') {
+        stage('Push-Images-Docker-to-ECR') {
             steps {
                 container('docker') {
                     sh '''
-                    docker push omsdevops.azurecr.io/fastapi:''' + scmVars.GIT_COMMIT + '''
-                    docker push omsdevops.azurecr.io/fastapi:latest
+                    docker push 114018177393.dkr.ecr.us-east-2.amazonaws.com/nestjs-docker:''' + scmVars.GIT_COMMIT + '''
+                    docker push 114018177393.dkr.ecr.us-east-2.amazonaws.com/nestjs-docker:''' + scmVars.GIT_COMMIT + '''
+                    docker push 114018177393.dkr.ecr.us-east-2.amazonaws.com/nestjs-docker:latest
                     '''
                 }
             }
