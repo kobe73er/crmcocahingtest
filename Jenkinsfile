@@ -14,6 +14,9 @@ pipeline {
                   namespace: jenkins
                 spec:
                   containers:
+                  - name: kubectl
+                    image: bitnami/kubectl
+                    command: ["/bin/sh", "-c", "while true; do sleep 30; done"]
                   - name: docker
                     image: docker:dind
                     securityContext:
@@ -89,7 +92,20 @@ pipeline {
                 }
             }
         }
+
+         stage('Helm Upgrade') {
+            steps {
+                container('kubectl') {
+                  withCredentials([file(credentialsId: "${K8S_KUBECONFIG}", variable: 'K8S_PRD')]) {
+                    sh '''
+                      cd helmChart
+                      helm upgrade --install nestjd-demo-chart ./ --values ./values.yaml --recreate-pods --namespace backend
+                    '''
+                }
+            }
+         }
     }
+
 
     post {
         always {
