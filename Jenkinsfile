@@ -84,7 +84,6 @@ pipeline {
                 container('docker') {
                     sh '''
                     docker push 114018177393.dkr.ecr.us-east-2.amazonaws.com/nestjs-docker:''' + scmVars.GIT_COMMIT + '''
-                    docker push 114018177393.dkr.ecr.us-east-2.amazonaws.com/nestjs-docker:''' + scmVars.GIT_COMMIT + '''
                     docker push 114018177393.dkr.ecr.us-east-2.amazonaws.com/nestjs-docker:latest
                     '''
                 }
