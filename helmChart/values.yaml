@@ -55,14 +55,7 @@ ingress:
               name: nestjs-demo-chart
               port:
                 number: 3000
-          path: /
-          pathType: Prefix
-        - backend:
-            service:
-              name: user-management
-              port:
-                number: 3001
-          path: /um(.*)
+          path: /pm(.*)
           pathType: Prefix
 
 
