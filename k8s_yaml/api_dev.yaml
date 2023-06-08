@@ -25,7 +25,8 @@ spec:
               service:
                 name: nestjs-demo-chart
                 port:
-                  number: 80
-            path: /hello-world(.*)
+                  number: 3000
+            path: /pm(.*)
             pathType: Prefix
+
 
