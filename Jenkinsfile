@@ -82,7 +82,7 @@ pipeline {
             }
         }
 
-        stage('Push-Images-Docker-to-ECR') {
+        stage('Push-Images-Docker-to-AWS-ECR') {
             steps {
                 container('docker') {
                     sh '''
@@ -93,19 +93,20 @@ pipeline {
             }
         }
 
-         stage('Helm Upgrade') {
-            steps {
-                container('kubectl') {
-                  withCredentials([file(credentialsId: "${K8S_KUBECONFIG}", variable: 'K8S_PRD')]) {
-                    sh '''
-                      cd helmChart
-                      helm upgrade --install nestjd-demo-chart ./ --values ./values.yaml --recreate-pods --namespace backend
-                    '''
-                }
-            }
-         }
-    }
+           stage('Helm-Upgrade') {
+                    steps {
+                        container('kubectl') {
+                          withCredentials([file(credentialsId: "${K8S_KUBECONFIG}", variable: 'K8S_PRD')]) {
+                            sh '''
+                              cd helmChart
+                              helm upgrade --install nestjd-demo-chart ./ --values ./values.yaml --recreate-pods --kubeconfig $K8S_PRD --namespace backend
+                            '''
+                        }
+                    }
+                 }
+             }
 
+    }
 
     post {
         always {
@@ -115,3 +116,7 @@ pipeline {
         }
     }
 }
+
+
+
+
