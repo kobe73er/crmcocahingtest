@@ -2,6 +2,7 @@ def scmVars
 pipeline {
     environment {
         DOCKER_KEY = credentials('ecr_token')
+        K8S_KUBECONFIG = 'k8s-dev'
     }
 
     agent {
@@ -99,7 +100,7 @@ pipeline {
                           withCredentials([file(credentialsId: "${K8S_KUBECONFIG}", variable: 'K8S_PRD')]) {
                             sh '''
                               cd helmChart
-                              helm upgrade --install nestjd-demo-chart ./ --values ./values.yaml --recreate-pods --kubeconfig $K8S_PRD --namespace backend
+                              helm upgrade --install nestjd-demo-chart ./ --values ./values.yaml --recreate-pods --kubeconfig $K8S_PRD --timeout=10m0s --wait=true --namespace backend
                             '''
                         }
                     }
