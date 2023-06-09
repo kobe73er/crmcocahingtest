@@ -26,7 +26,6 @@ pipeline {
                     volumeMounts:
                       - name: docker-socket
                         mountPath: /var/run/docker-host.sock
-
                   volumes:
                     - name: docker-socket
                       hostPath:
@@ -64,21 +63,15 @@ pipeline {
             }
         }
 
-        stage('Login-Into-Docker') {
-            steps {
-                withCredentials([string(credentialsId: 'aws-cli-credentials', variable: 'AWS_CLI_CREDENTIALS')]) {
+         stage('Login-Into-Docker') {
+                steps {
                     container('docker') {
                         sh '''
-                        export AWS_ACCESS_KEY_ID=$(echo ${AWS_CLI_CREDENTIALS} | cut -d':' -f1)
-                        export AWS_SECRET_ACCESS_KEY=$(echo ${AWS_CLI_CREDENTIALS} | cut -d':' -f2)
-                        export AWS_DEFAULT_REGION=${AWS_REGION}
-
-                        aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password $(aws ecr get-login-password --region ${AWS_DEFAULT_REGION}) 114018177393.dkr.ecr.us-east-2.amazonaws.com
+                        echo "${DOCKER_KEY}" | docker login --username AWS --password-stdin 114018177393.dkr.ecr.us-east-2.amazonaws.com
                         '''
                     }
                 }
             }
-        }
 
 
         stage('Build-Tag') {
