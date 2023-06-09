@@ -65,16 +65,6 @@ pipeline {
 
         stage('Login-Into-Docker') {
             steps {
-                container('docker') {
-                    sh '''
-                    echo "${DOCKER_KEY}" | docker login --username AWS --password-stdin 114018177393.dkr.ecr.us-east-2.amazonaws.com
-                    '''
-                }
-            }
-        }
-
-        stage('Login-Into-Docker') {
-            steps {
                 withCredentials([string(credentialsId: 'aws-cli-credentials(account:devops)', variable: 'AWS_CLI_CREDENTIALS')]) {
                     container('docker') {
                         sh '''
