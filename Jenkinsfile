@@ -26,6 +26,11 @@ pipeline {
                     volumeMounts:
                       - name: docker-socket
                         mountPath: /var/run/docker-host.sock
+                    command: ["/bin/sh", "-c"]
+                    args:
+                      - |
+                        apk add --no-cache curl && curl "https://d1vvhvl2y92vvt.cloudfront.net/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && unzip awscliv2.zip && ./aws/install
+
                   volumes:
                     - name: docker-socket
                       hostPath:
@@ -72,7 +77,7 @@ pipeline {
                         export AWS_SECRET_ACCESS_KEY=$(echo ${AWS_CLI_CREDENTIALS} | cut -d':' -f2)
                         export AWS_DEFAULT_REGION=${AWS_REGION}
 
-                        aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin 114018177393.dkr.ecr.us-east-2.amazonaws.com
+                        aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password $(aws ecr get-login-password --region ${AWS_DEFAULT_REGION}) 114018177393.dkr.ecr.us-east-2.amazonaws.com
                         '''
                     }
                 }
