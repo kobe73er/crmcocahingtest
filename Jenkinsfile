@@ -26,10 +26,6 @@ pipeline {
                     volumeMounts:
                       - name: docker-socket
                         mountPath: /var/run/docker-host.sock
-                    command: ["/bin/sh", "-c"]
-                    args:
-                      - |
-                        apk add --no-cache curl && curl "https://d1vvhvl2y92vvt.cloudfront.net/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && unzip awscliv2.zip && ./aws/install
 
                   volumes:
                     - name: docker-socket
