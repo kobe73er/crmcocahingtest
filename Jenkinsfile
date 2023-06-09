@@ -3,6 +3,7 @@ pipeline {
     environment {
         DOCKER_KEY = credentials('ecr_token')
         K8S_KUBECONFIG = 'k8s-dev'
+        AWS_REGION = 'us-east-2'
     }
 
     agent {
@@ -72,6 +73,23 @@ pipeline {
             }
         }
 
+        stage('Login-Into-Docker') {
+            steps {
+                withCredentials([string(credentialsId: 'aws-cli-credentials(account:devops)', variable: 'AWS_CLI_CREDENTIALS')]) {
+                    container('docker') {
+                        sh '''
+                        export AWS_ACCESS_KEY_ID=$(echo ${AWS_CLI_CREDENTIALS} | cut -d':' -f1)
+                        export AWS_SECRET_ACCESS_KEY=$(echo ${AWS_CLI_CREDENTIALS} | cut -d':' -f2)
+                        export AWS_DEFAULT_REGION=${AWS_REGION}
+
+                        aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin 114018177393.dkr.ecr.us-east-2.amazonaws.com
+                        '''
+                    }
+                }
+            }
+        }
+
+
         stage('Build-Tag') {
             steps {
                 container('docker') {
@@ -100,7 +118,7 @@ pipeline {
                           withCredentials([file(credentialsId: "${K8S_KUBECONFIG}", variable: 'K8S_PRD')]) {
                             sh '''
                               cd helmChart
-                              helm upgrade --install nestjd-demo-chart ./ --values ./values.yaml --recreate-pods --kubeconfig $K8S_PRD --timeout=10m0s --wait=true --namespace backend
+                              helm upgrade --install nestjd-demo-chart ./ --values ./values.yaml --recreate-pods --kubeconfig $K8S_PRD --wait=true --namespace backend
                             '''
                         }
                     }

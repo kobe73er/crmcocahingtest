@@ -11,3 +11,10 @@ kubectl create secret docker-registry ecr-secret-nestjs-demo \
 ```shell
 aws ecr get-login-password --region us-east-2 
 ```
+
+## How to get currently EKS cluster kubeconfig
+```shell
+- kubectl config current-context
+- aws eks update-kubeconfig --name purocoach-eks-dev --kubeconfig /Users/andrew/Desktop/content/client/crmcoaching/crm-coach/code/app/nestjs_template_project/k8s_yaml/kubeconfig
+
+```
