@@ -65,7 +65,7 @@ pipeline {
 
         stage('Login-Into-Docker') {
             steps {
-                withCredentials([string(credentialsId: 'aws-cli-credentials(account:devops)', variable: 'AWS_CLI_CREDENTIALS')]) {
+                withCredentials([string(credentialsId: 'aws-cli-credentials', variable: 'AWS_CLI_CREDENTIALS')]) {
                     container('docker') {
                         sh '''
                         export AWS_ACCESS_KEY_ID=$(echo ${AWS_CLI_CREDENTIALS} | cut -d':' -f1)
