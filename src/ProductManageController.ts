@@ -20,4 +20,9 @@ export class ProductManageController {
     return "all3";
   }
 
+  @Get("/all4")
+  getAllProducts4(): string {
+    return "all4";
+  }
+
 }
