@@ -103,11 +103,7 @@ pipeline {
                 steps {
                     container('git') {
                         sh '''
-                                  apk add openssh-client  # 安装 OpenSSH 客户端
 
-                                  # 创建 SSH 目录并设置权限
-                                  mkdir -p ~/.ssh
-                                  chmod 700 ~/.ssh
 
                                   # 配置 SSH 密钥
                                   echo "${SSH_PRIVATE_KEY}" > ~/.ssh/id_rsa
