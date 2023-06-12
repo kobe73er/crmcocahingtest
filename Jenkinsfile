@@ -114,6 +114,9 @@ pipeline {
                         # 设置新的appVersion
                         new_app_version=$(git rev-parse --short HEAD)
 
+                        pwd
+                        ls
+
                         # 更新chart.yaml文件中的appVersion字段
                         sed -i '' "s/appVersion: ${app_version}/appVersion: ${new_app_version}/" ./Chart.yaml
 
