@@ -118,7 +118,7 @@ pipeline {
                         ls
 
                         # 更新chart.yaml文件中的appVersion字段
-                        sed -i '' "s/appVersion: ${app_version}/appVersion: ${new_app_version}/" ./Chart.yaml
+                        sed -i '' "s/appVersion: ${app_version}/appVersion: ${new_app_version}/" Chart.yaml
 
                         git add . && git commit -m "modify Helm appVersion" && git push origin master
 
