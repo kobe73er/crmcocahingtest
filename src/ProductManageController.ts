@@ -25,4 +25,9 @@ export class ProductManageController {
     return "all4";
   }
 
+  @Get("/all5")
+  getAllProducts5(): string {
+    return "all5";
+  }
+
 }
