@@ -103,30 +103,36 @@ pipeline {
                 steps {
                     container('git') {
                         sh '''
+                           apk add openssh-client  # 安装 OpenSSH 客户端
 
-                        git clone https://github.com/kobe73er/helm_repo_nestjs.git
+                           # 配置 SSH 密钥
+                           echo "${SSH_PRIVATE_KEY}" > ~/.ssh/id_rsa
+                           chmod 600 ~/.ssh/id_rsa
+                           eval $(ssh-agent)
+                           ssh-add ~/.ssh/id_rsa
 
-                        cd helm_repo_nestjs/nestjs
+                           # 克隆仓库并进行相关操作
+                           git clone git@github.com:kobe73er/helm_repo_nestjs.git
+                           cd helm_repo_nestjs/nestjs
 
-                        # 获取当前的appVersion
-                        app_version=$(cat Chart.yaml | grep appVersion | grep -v '#' | awk '{print $2}')
+                           # 获取当前的appVersion
+                           app_version=$(cat Chart.yaml | grep appVersion | grep -v '#' | awk '{print $2}')
 
-                        # 设置新的appVersion
-                        new_app_version=$(git rev-parse --short HEAD)
+                           # 设置新的appVersion
+                           new_app_version=$(git rev-parse --short HEAD)
 
-                        pwd
-                        ls
+                           pwd
+                           ls
 
-                        # 使用awk命令进行变量替换
-                        awk -v old_version="$app_version" -v new_version="$new_app_version" '{gsub("appVersion: " old_version, "appVersion: " new_version)}1' Chart.yaml > Chart.yaml.tmp
-                        mv Chart.yaml.tmp Chart.yaml
+                           # 使用awk命令进行变量替换
+                           awk -v old_version="$app_version" -v new_version="$new_app_version" '{gsub("appVersion: " old_version, "appVersion: " new_version)}1' Chart.yaml > Chart.yaml.tmp
+                           mv Chart.yaml.tmp Chart.yaml
 
-                        git config user.name "andrew.deng"
-                        git config user.email "kobe73er@gmail.com"
+                           git config user.name "andrew.deng"
+                           git config user.email "kobe73er@gmail.com"
 
-                        git add . && git commit -m "modify Helm appVersion" && git push origin master
-
-                        '''
+                           git add . && git commit -m "modify Helm appVersion" && git push origin master
+                         '''
                     }
                 }
         }
