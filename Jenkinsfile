@@ -117,8 +117,9 @@ pipeline {
                         pwd
                         ls
 
-                        # 更新chart.yaml文件中的appVersion字段
-                        sed -i '' "s/appVersion: ${app_version}/appVersion: ${new_app_version}/" Chart.yaml
+                        # 使用awk命令进行变量替换
+                        awk -v old_version="$app_version" -v new_version="$new_app_version" '{gsub("appVersion: " old_version, "appVersion: " new_version)}1' Chart.yaml > Chart.yaml.tmp
+                        mv Chart.yaml.tmp Chart.yaml
 
                         git add . && git commit -m "modify Helm appVersion" && git push origin master
 
