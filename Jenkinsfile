@@ -103,36 +103,40 @@ pipeline {
                 steps {
                     container('git') {
                         sh '''
-                           apk add openssh-client  # 安装 OpenSSH 客户端
+                                  apk add openssh-client  # 安装 OpenSSH 客户端
 
-                           # 配置 SSH 密钥
-                           echo "${SSH_PRIVATE_KEY}" > ~/.ssh/id_rsa
-                           chmod 600 ~/.ssh/id_rsa
-                           eval $(ssh-agent)
-                           ssh-add ~/.ssh/id_rsa
+                                  # 创建 SSH 目录并设置权限
+                                  mkdir -p ~/.ssh
+                                  chmod 700 ~/.ssh
 
-                           # 克隆仓库并进行相关操作
-                           git clone git@github.com:kobe73er/helm_repo_nestjs.git
-                           cd helm_repo_nestjs/nestjs
+                                  # 配置 SSH 密钥
+                                  echo "${SSH_PRIVATE_KEY}" > ~/.ssh/id_rsa
+                                  chmod 600 ~/.ssh/id_rsa
+                                  eval $(ssh-agent)
+                                  ssh-add ~/.ssh/id_rsa
 
-                           # 获取当前的appVersion
-                           app_version=$(cat Chart.yaml | grep appVersion | grep -v '#' | awk '{print $2}')
+                                  # 克隆仓库并进行相关操作
+                                  git clone git@github.com:kobe73er/helm_repo_nestjs.git
+                                  cd helm_repo_nestjs/nestjs
 
-                           # 设置新的appVersion
-                           new_app_version=$(git rev-parse --short HEAD)
+                                  # 获取当前的appVersion
+                                  app_version=$(cat Chart.yaml | grep appVersion | grep -v '#' | awk '{print $2}')
 
-                           pwd
-                           ls
+                                  # 设置新的appVersion
+                                  new_app_version=$(git rev-parse --short HEAD)
 
-                           # 使用awk命令进行变量替换
-                           awk -v old_version="$app_version" -v new_version="$new_app_version" '{gsub("appVersion: " old_version, "appVersion: " new_version)}1' Chart.yaml > Chart.yaml.tmp
-                           mv Chart.yaml.tmp Chart.yaml
+                                  pwd
+                                  ls
 
-                           git config user.name "andrew.deng"
-                           git config user.email "kobe73er@gmail.com"
+                                  # 使用awk命令进行变量替换
+                                  awk -v old_version="$app_version" -v new_version="$new_app_version" '{gsub("appVersion: " old_version, "appVersion: " new_version)}1' Chart.yaml > Chart.yaml.tmp
+                                  mv Chart.yaml.tmp Chart.yaml
 
-                           git add . && git commit -m "modify Helm appVersion" && git push origin master
-                         '''
+                                  git config user.name "andrew.deng"
+                                  git config user.email "kobe73er@gmail.com"
+
+                                  git add . && git commit -m "modify Helm appVersion" && git push origin master
+                                  '''
                     }
                 }
         }
