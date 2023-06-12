@@ -26,9 +26,9 @@ pipeline {
                     volumeMounts:
                       - name: docker-socket
                         mountPath: /var/run/docker-host.sock
-                 - name: git
-                   image: alpine/git
-                   command: ["/bin/sh", "-c", "while true; do sleep 30; done"]
+                  - name: git
+                    image: alpine/git
+                    command: ["/bin/sh", "-c", "while true; do sleep 30; done"]
                   volumes:
                     - name: docker-socket
                       hostPath:
