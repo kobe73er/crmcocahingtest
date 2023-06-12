@@ -26,6 +26,9 @@ pipeline {
                     volumeMounts:
                       - name: docker-socket
                         mountPath: /var/run/docker-host.sock
+                 - name: git
+                   image: alpine/git
+                   command: ["/bin/sh", "-c", "while true; do sleep 30; done"]
                   volumes:
                     - name: docker-socket
                       hostPath:
@@ -98,7 +101,7 @@ pipeline {
 
         stage('Update Helm Chart Version') {
                 steps {
-                    container('docker') {
+                    container('git') {
                         sh '''
 
                         git clone https://github.com/kobe73er/helm_repo_nestjs.git
