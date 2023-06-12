@@ -96,6 +96,31 @@ pipeline {
             }
         }
 
+        stage('Update Helm Chart Version') {
+                steps {
+                    container('docker') {
+                        sh '''
+
+                        git clone https://github.com/kobe73er/helm_repo_nestjs.git
+
+                        cd helm_repo_nestjs/nestjs
+
+                        # 获取当前的appVersion
+                        app_version=$(cat Chart.yaml | grep appVersion | grep -v '#' | awk '{print $2}')
+
+                        # 设置新的appVersion
+                        new_app_version=$(git rev-parse --short HEAD)
+
+                        # 更新chart.yaml文件中的appVersion字段
+                        sed -i '' "s/appVersion: ${app_version}/appVersion: ${new_app_version}/" helm-chart/Chart.yaml
+
+                        git add . && git commit -m "modify Helm appVersion" && git push origin master
+
+                        '''
+                    }
+                }
+        }
+
     }
 
     post {
