@@ -121,6 +121,9 @@ pipeline {
                         awk -v old_version="$app_version" -v new_version="$new_app_version" '{gsub("appVersion: " old_version, "appVersion: " new_version)}1' Chart.yaml > Chart.yaml.tmp
                         mv Chart.yaml.tmp Chart.yaml
 
+                        git config user.name "andrew.deng"
+                        git config user.email "kobe73er@gmail.com"
+
                         git add . && git commit -m "modify Helm appVersion" && git push origin master
 
                         '''
