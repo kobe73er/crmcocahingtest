@@ -12,8 +12,8 @@ image:
 
 imagePullSecrets:
   - name: 'ecr-secret-nestjs-demo'
-nameOverride: "nestjs-demo"
-fullnameOverride: "nestjs-demo-chart"
+nameOverride: "nestjs"
+fullnameOverride: "nestjs"
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -22,7 +22,7 @@ serviceAccount:
   annotations: {}
   # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
-  name: "nestjs-demo"
+  name: "nestjs"
 
 podAnnotations: {}
 
@@ -64,7 +64,7 @@ ingress:
       paths:
         - backend:
             service:
-              name: nestjs-demo-chart
+              name: nestjs
               port:
                 number: 3000
           path: /pm(.*)

@@ -102,7 +102,7 @@ pipeline {
                           withCredentials([file(credentialsId: "${K8S_KUBECONFIG}", variable: 'K8S_PRD')]) {
                             sh '''
                               cd helmChart
-                              helm upgrade --install nestjd-demo-chart ./ --values ./values.yaml --recreate-pods --kubeconfig $K8S_PRD --wait=true --namespace backend
+                              helm upgrade --install nestjs ./ --values ./values.yaml --recreate-pods --kubeconfig $K8S_PRD --wait=true --namespace backend
                             '''
                         }
                     }
