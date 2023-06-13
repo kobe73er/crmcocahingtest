@@ -102,6 +102,7 @@ pipeline {
 
       stage('Update Helm Chart Version') {
           steps {
+          container('docker') {
               script {
                   withCredentials([usernamePassword(credentialsId: 'YOUR_GITHUB_CREDENTIALS_ID', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                       // Clone Helm Chart 仓库，并提供凭据进行身份验证
@@ -129,6 +130,7 @@ pipeline {
                           sh "git push origin master"
                       }
                   }
+              }
               }
           }
       }
