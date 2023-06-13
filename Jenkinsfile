@@ -19,9 +19,6 @@ pipeline {
                   - name: kubectl
                     image: bitnami/kubectl
                     command: ["/bin/sh", "-c", "while true; do sleep 30; done"]
-                  - name: argocd
-                    image: argoproj/argocd:latest
-                    command: ["/bin/sh", "-c", "while true; do sleep 30; done"]
                   - name: docker
                     image: docker:dind
                     securityContext:
@@ -105,8 +102,12 @@ pipeline {
 
         stage('Update Argo CD') {
             steps {
-                container('argocd') {
+                container('docker') {
                     sh '''
+
+                    curl -LO https://github.com/argoproj/argo-cd/releases/download/v2.6.7/argocd-linux-amd64
+                    chmod +x argocd-linux-amd64
+                    sudo mv argocd-linux-amd64 /usr/local/bin/argocd
 
                     # 登录到 Argo CD
                     argocd login 172.20.120.131 --username admin --password Deng_pf1234 --insecure --grpc-web
