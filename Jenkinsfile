@@ -109,7 +109,7 @@ pipeline {
                     sh '''
 
                     # 登录到 Argo CD
-                    argocd login 172.20.120.131 --username admin --password Deng_pf1234 --insecure
+                    argocd login 172.20.120.131 --username admin --password Deng_pf1234 --insecure --grpc-web
 
                     # 更新应用程序
                     argocd app sync nestjs
