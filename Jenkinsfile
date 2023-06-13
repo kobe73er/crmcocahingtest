@@ -103,24 +103,22 @@ pipeline {
       stage('Update Helm Chart Version') {
           steps {
               script {
-                  // Clone Helm Chart 仓库
-                  git url: 'git@github.com:kobe73er/helm_repo_nestjs.git'
+                  withCredentials([usernamePassword(credentialsId: 'YOUR_GITHUB_CREDENTIALS_ID', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                      // Clone Helm Chart 仓库，并提供凭据进行身份验证
+                      git credentialsId: 'YOUR_GITHUB_CREDENTIALS_ID', url: 'git@github.com:kobe73er/helm_repo_nestjs.git'
 
-                  // 进入 Helm Chart 目录
-                  dir('helm_repo_nestjs/nestjs') {
-                      // 获取当前的 appVersion
-                      def currentAppVersion = sh(returnStdout: true, script: "cat Chart.yaml | grep appVersion | awk '{print \$2}' | tr -d '\r'").trim()
+                      // 进入 Helm Chart 目录
+                      dir('helm_repo_nestjs/nestjs') {
+                          // 获取当前的 appVersion
+                          def currentAppVersion = sh(returnStdout: true, script: "cat Chart.yaml | grep appVersion | awk '{print \$2}' | tr -d '\r'").trim()
 
-                      // 计算新的 appVersion
-                      def newAppVersion = scmVars.GIT_COMMIT // 根据需要计算新的 appVersion
+                          // 计算新的 appVersion
+                          def newAppVersion = scmVars.GIT_COMMIT // 根据需要计算新的 appVersion
 
-                      // 更新 Chart.yaml 文件中的 appVersion
-                      sh "sed -i 's/appVersion: ${currentAppVersion}/appVersion: ${newAppVersion}/' Chart.yaml"
+                          // 更新 Chart.yaml 文件中的 appVersion
+                          sh "sed -i 's/appVersion: ${currentAppVersion}/appVersion: ${newAppVersion}/' Chart.yaml"
 
-                      // 提交更新的 Chart.yaml 文件到 GitHub 存储库
-                      withCredentials([usernamePassword(credentialsId: 'YOUR_GITHUB_CREDENTIALS_ID', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                          sh "git config --global credential.username $USERNAME"
-                          sh "git config --global credential.helper '!echo \$PASSWORD'"
+                          // 提交更新的 Chart.yaml 文件到 GitHub 存储库
                           sh "git add Chart.yaml"
                           sh "git commit -m 'Update appVersion in Chart.yaml'"
                           sh "git push origin master"
@@ -129,6 +127,7 @@ pipeline {
               }
           }
       }
+
 
 
 
