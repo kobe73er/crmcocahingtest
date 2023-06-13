@@ -20,7 +20,7 @@ pipeline {
                     image: bitnami/kubectl
                     command: ["/bin/sh", "-c", "while true; do sleep 30; done"]
                   - name: argocd
-                    image: argoproj/argocd:v2.6.7
+                    image: argoproj/argocd:latest
                     command: ["/bin/sh", "-c", "while true; do sleep 30; done"]
                   - name: docker
                     image: docker:dind
