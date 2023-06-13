@@ -105,7 +105,7 @@ pipeline {
               script {
                   withCredentials([usernamePassword(credentialsId: 'YOUR_GITHUB_CREDENTIALS_ID', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                       // Clone Helm Chart 仓库，并提供凭据进行身份验证
-                      git credentialsId: 'YOUR_GITHUB_CREDENTIALS_ID', url: 'git@github.com:kobe73er/helm_repo_nestjs.git'
+                      git credentialsId: 'YOUR_GITHUB_CREDENTIALS_ID', url: 'https://github.com/kobe73er/helm_repo_nestjs.git'
 
                       // 进入 Helm Chart 目录
                       dir('helm_repo_nestjs/nestjs') {
@@ -127,9 +127,6 @@ pipeline {
               }
           }
       }
-
-
-
 
 
     }
