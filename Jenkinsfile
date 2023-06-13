@@ -109,7 +109,8 @@ pipeline {
                   // 进入 Helm Chart 目录
                   dir('helm_repo_nestjs/nestjs') {
                       // 获取当前的 appVersion
-                      def currentAppVersion = sh(returnStdout: true, script: "cat Chart.yaml | grep appVersion | awk '{print $2}'").trim()
+                      def currentAppVersion = sh(returnStdout: true, script: "cat Chart.yaml | grep appVersion | awk '{print $2}' | tr -d '\r'").trim()
+
 
                       // 计算新的 appVersion
                       def newAppVersion = scmVars.GIT_COMMIT// 根据需要计算新的 appVersion
