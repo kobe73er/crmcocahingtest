@@ -104,7 +104,7 @@ pipeline {
           steps {
               script {
                   // Clone Helm Chart 仓库
-                  git credentialsId: 'YOUR_GITHUB_CREDENTIALS_ID', url: 'git@github.com:kobe73er/helm_repo_nestjs.git'
+                  git credentialsId: 'JENKINS_GITHUB_TOKEN', url: 'git@github.com:kobe73er/helm_repo_nestjs.git'
 
                   // 进入 Helm Chart 目录
                   dir('helm_repo_nestjs/nestjs') {
