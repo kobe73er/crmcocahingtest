@@ -100,24 +100,32 @@ pipeline {
         }
 
 
-        stage('Update Argo CD') {
-            steps {
-                container('docker') {
-                    sh '''
-                    apk add curl
-                    curl -LO https://github.com/argoproj/argo-cd/releases/download/v2.6.7/argocd-linux-amd64
-                    chmod +x argocd-linux-amd64
-                    mv argocd-linux-amd64 /usr/local/bin/argocd
+      stage('Update Helm Chart Version') {
+          steps {
+              script {
+                  // Clone Helm Chart 仓库
+                  git credentialsId: 'YOUR_GITHUB_CREDENTIALS_ID', url: 'git@github.com:kobe73er/helm_repo_nestjs.git'
 
-                    # 登录到 Argo CD
-                    argocd login 172.20.120.131 --username admin --password Deng_pf1234 --insecure --grpc-web
+                  // 进入 Helm Chart 目录
+                  dir('helm_repo_nestjs/nestjs') {
+                      // 获取当前的 appVersion
+                      def currentAppVersion = sh(returnStdout: true, script: "cat Chart.yaml | grep appVersion | awk '{print $2}'").trim()
 
-                    # 更新应用程序
-                    argocd app sync nestjs
-                    '''
-                }
-            }
-        }
+                      // 计算新的 appVersion
+                      def newAppVersion = scmVars.GIT_COMMIT// 根据需要计算新的 appVersion
+
+                      // 更新 Chart.yaml 文件中的 appVersion
+                      sh "sed -i 's/appVersion: ${currentAppVersion}/appVersion: ${newAppVersion}/' Chart.yaml"
+
+                      // 提交更新的 Chart.yaml 文件到 GitHub 存储库
+                      sh "git add Chart.yaml"
+                      sh "git commit -m 'Update appVersion in Chart.yaml'"
+                      sh "git push origin master"
+                  }
+              }
+          }
+      }
+
 
 
 
