@@ -104,7 +104,7 @@ pipeline {
             steps {
                 container('docker') {
                     sh '''
-
+                    apk add curl
                     curl -LO https://github.com/argoproj/argo-cd/releases/download/v2.6.7/argocd-linux-amd64
                     chmod +x argocd-linux-amd64
                     sudo mv argocd-linux-amd64 /usr/local/bin/argocd
