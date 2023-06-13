@@ -21,7 +21,6 @@ pipeline {
                     command: ["/bin/sh", "-c", "while true; do sleep 30; done"]
                   - name: argocd
                     image: argoproj/argocd:v2.6.7
-                    command: ["/bin/sh", "-c", "while true; do sleep 30; done"]
                   - name: docker
                     image: docker:dind
                     securityContext:
