@@ -26,12 +26,6 @@ pipeline {
                     volumeMounts:
                       - name: docker-socket
                         mountPath: /var/run/docker-host.sock
-                    command:
-                      - sh
-                      - -c
-                      - |
-                        apk update
-                        apk add git
                   - name: git
                     image: alpine/git
                     command: ["/bin/sh", "-c", "while true; do sleep 30; done"]
@@ -116,8 +110,8 @@ pipeline {
 
                       // 进入 Helm Chart 目录
                       dir('nestjs') {
-                          sh "pwd"
-                          sh "ls"
+                          apk add git
+
                           // 获取当前的 appVersion
                           def currentAppVersion = sh(returnStdout: true, script: "cat Chart.yaml | grep appVersion | awk '{print \$2}' | tr -d '\r'").trim()
 
