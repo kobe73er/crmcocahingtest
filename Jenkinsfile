@@ -58,6 +58,9 @@ pipeline {
 
 
       stage('Update Helm Chart Version') {
+        environment {
+              GIT_SSH_COMMAND = 'ssh -o StrictHostKeyChecking=no'
+          }
           steps {
               container('docker') {
                   script {
