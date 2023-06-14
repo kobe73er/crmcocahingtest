@@ -61,18 +61,19 @@ pipeline {
                 steps {
                     container('docker') {
                         // 省略部分代码...
-
-                        sh "currentAppVersion=$(cat Chart.yaml | grep appVersion | awk '{print \$2}' | tr -d '\r')"
+                        sh '''
+                        currentAppVersion=$(cat Chart.yaml | grep appVersion | awk '{print \$2}' | tr -d '\r')"
                         // 计算新的 appVersion
-                        sh "newAppVersion=\"${scmVars.GIT_COMMIT}\"" // 根据需要计算新的 appVersion
+                        newAppVersion=${scmVars.GIT_COMMIT}// 根据需要计算新的 appVersion
 
                         // 更新 Chart.yaml 文件中的 appVersion
-                        sh "sed -i 's/appVersion: \${currentAppVersion}/appVersion: \${newAppVersion}/' Chart.yaml"
+                        sed -i 's/appVersion: \${currentAppVersion}/appVersion: \${newAppVersion}/' Chart.yaml
 
                         // 提交更新的 Chart.yaml 文件到 GitHub 存储库
-                        sh "git add Chart.yaml"
-                        sh "git commit -m 'Update appVersion in Chart.yaml'"
-                        sh "git push origin master"
+                        git add Chart.yaml
+                        git commit -m 'Update appVersion in Chart.yaml'
+                        git push origin master
+                        '''
                     }
                 }
             }
