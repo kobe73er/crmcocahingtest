@@ -60,6 +60,7 @@ pipeline {
         stage('Update Helm Chart Version') {
                 steps {
                     container('docker') {
+                    script {
 
                         git url: 'https://github.com/kobe73er/helm_repo_nestjs.git', branch: 'master',
                         credentialsId: 'github_creds'
@@ -81,6 +82,7 @@ pipeline {
                         '''
                     }
                 }
+            }
             }
 
     }
