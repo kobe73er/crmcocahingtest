@@ -126,6 +126,8 @@ pipeline {
 
                           sh "pwd && ls"
 
+                          sh "git status"
+
                           sh "git config credential.username ${USERNAME}"
                           sh "git config credential.helper '!echo password=${PASSWORD}; echo'"
 
