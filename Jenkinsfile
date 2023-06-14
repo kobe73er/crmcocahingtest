@@ -121,7 +121,7 @@ pipeline {
                           // 更新 Chart.yaml 文件中的 appVersion
                           sh "sed -i 's/appVersion: ${currentAppVersion}/appVersion: ${newAppVersion}/' Chart.yaml"
 
-                          sh "pwd"
+                          sh "pwd && ls && git status"
 
                           sh "git config --global user.email \"kobe73er@gmail.com\" "
                           sh "git config --global user.name \"kobe73er\" "
