@@ -110,7 +110,7 @@ pipeline {
 
                       // 进入 Helm Chart 目录
                       dir('nestjs') {
-                          apk add git
+                          sh "apk add git"
 
                           // 获取当前的 appVersion
                           def currentAppVersion = sh(returnStdout: true, script: "cat Chart.yaml | grep appVersion | awk '{print \$2}' | tr -d '\r'").trim()
