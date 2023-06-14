@@ -60,8 +60,14 @@ pipeline {
         stage('Update Helm Chart Version') {
                 steps {
                     container('docker') {
-                        // 省略部分代码...
+
+                        // Get code from a GitHub repository
+                        git url: 'https://github.com/kobe73er/helm_repo_nestjs.git', branch: 'master',
+                        credentialsId: 'github_creds'
+
+
                         sh '''
+                        cd nestjs && pwd && ls
                         currentAppVersion=$(cat Chart.yaml | grep appVersion | awk '{print \$2}' | tr -d '\r')
                         // 计算新的 appVersion
                         newAppVersion=${scmVars.GIT_COMMIT}// 根据需要计算新的 appVersion
