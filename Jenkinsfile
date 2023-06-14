@@ -61,7 +61,7 @@ pipeline {
          steps {
          container('docker') {
                         // Get code from a GitHub repository
-                        git url: 'https://github.com/kobe73er/crmcocahingtest.git', branch: 'master',
+                        git url: 'https://github.com/kobe73er/helm_repo_nestjs.git', branch: 'master',
                         credentialsId: 'github_creds'
 
                         sh "apk add git"
