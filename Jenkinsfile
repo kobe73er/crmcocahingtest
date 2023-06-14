@@ -121,7 +121,7 @@ pipeline {
                           // 更新 Chart.yaml 文件中的 appVersion
                           sh "sed -i 's/appVersion: ${currentAppVersion}/appVersion: ${newAppVersion}/' Chart.yaml"
 
-                          sh "pwd && ls && git status"
+                          sh "pwd && ls"
 
                           sh "git config --global --add safe.directory /home/jenkins/agent/workspace/nestjs_demo"
                           sh "git config --global user.email \"kobe73er@gmail.com\" "
