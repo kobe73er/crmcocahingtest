@@ -123,8 +123,8 @@ pipeline {
 
                           sh "pwd"
 
-                          git config --global user.email "kobe73er@gmail.com"
-                          git config --global user.name "kobe73er"
+                          sh "git config --global user.email \"kobe73er@gmail.com\" "
+                          sh "git config --global user.name \"kobe73er\" "
 
                           // 提交更新的 Chart.yaml 文件到 GitHub 存储库
                           sh "git add Chart.yaml"
