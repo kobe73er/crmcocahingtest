@@ -58,40 +58,30 @@ pipeline {
 
 
       stage('Update Helm Chart Version') {
-        environment {
-              GIT_SSH_COMMAND = 'ssh -o StrictHostKeyChecking=no'
-          }
-          steps {
-              container('docker') {
-                  script {
-                      withCredentials([sshUserPrivateKey(credentialsId: 'SSH_CREDENTIALS_ID', keyFileVariable: 'SSH_KEYFILE', passphraseVariable: '', usernameVariable: 'USERNAME')]) {
-                          // Clone Helm Chart 仓库，并提供凭据进行身份验证
-                          git credentialsId: 'SSH_CREDENTIALS_ID', url: 'git@github.com:kobe73er/helm_repo_nestjs.git'
+         steps {
+                        // Get code from a GitHub repository
+                        git url: 'https://github.com/kobe73er/crmcocahingtest.git', branch: 'master',
+                        credentialsId: 'github_creds'
 
-                          // 进入 Helm Chart 目录
-                          dir('nestjs') {
-                              sh "apk add git"
+                        sh "apk add git"
 
-                              // 获取当前的 appVersion
-                              def currentAppVersion = sh(returnStdout: true, script: "cat Chart.yaml | grep appVersion | awk '{print \$2}' | tr -d '\r'").trim()
+                        // 获取当前的 appVersion
+                        def currentAppVersion = sh(returnStdout: true, script: "cat Chart.yaml | grep appVersion | awk '{print \$2}' | tr -d '\r'").trim()
 
-                              // 计算新的 appVersion
-                              def newAppVersion = scmVars.GIT_COMMIT // 根据需要计算新的 appVersion
+                        // 计算新的 appVersion
+                        def newAppVersion = scmVars.GIT_COMMIT // 根据需要计算新的 appVersion
 
-                              // 更新 Chart.yaml 文件中的 appVersion
-                              sh "sed -i 's/appVersion: ${currentAppVersion}/appVersion: ${newAppVersion}/' Chart.yaml"
+                        // 更新 Chart.yaml 文件中的 appVersion
+                        sh "sed -i 's/appVersion: ${currentAppVersion}/appVersion: ${newAppVersion}/' Chart.yaml"
 
-                              sh "pwd && ls"
+                        sh "pwd && ls"
 
-                              // 提交更新的 Chart.yaml 文件到 GitHub 存储库
-                              sh "git add Chart.yaml"
-                              sh "git commit -m 'Update appVersion in Chart.yaml'"
-                              sh "git push origin master"
-                          }
-                      }
-                  }
-              }
-          }
+                        // 提交更新的 Chart.yaml 文件到 GitHub 存储库
+                        sh "git add Chart.yaml"
+                        sh "git commit -m 'Update appVersion in Chart.yaml'"
+                        sh "git push origin master"
+               }
+
       }
 
 
