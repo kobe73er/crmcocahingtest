@@ -106,11 +106,13 @@ pipeline {
               script {
                   withCredentials([usernamePassword(credentialsId: 'YOUR_GITHUB_CREDENTIALS_ID', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                       // Clone Helm Chart 仓库，并提供凭据进行身份验证
-                  // Clone Helm Chart 仓库
-                  git url: 'git@github.com:kobe73er/helm_repo_nestjs.git'
+                      git credentialsId: 'YOUR_GITHUB_CREDENTIALS_ID', url: 'https://github.com/kobe73er/helm_repo_nestjs.git'
 
                       // 进入 Helm Chart 目录
                       dir('nestjs') {
+                          sh "echo ${USERNAME}"
+                          sh "echo ${PASSWORD}"
+
                           sh "apk add git"
 
                           // 获取当前的 appVersion
