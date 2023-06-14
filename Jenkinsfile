@@ -67,9 +67,7 @@ pipeline {
                         sh "apk add git"
                         sh "cd nestjs && pwd && ls"
 
-                        // 获取当前的 appVersion
-                        sh "cat Chart.yaml | grep appVersion | awk '{print \$2}' | tr -d '\r'".trim()
-
+                        sh "currentAppVersion = cat Chart.yaml | grep appVersion | awk '{print \$2}' | tr -d '\r'"
                         // 计算新的 appVersion
                         sh "newAppVersion = scmVars.GIT_COMMIT" // 根据需要计算新的 appVersion
 
