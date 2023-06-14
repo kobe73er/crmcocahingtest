@@ -62,7 +62,7 @@ pipeline {
                     container('docker') {
                         // 省略部分代码...
                         sh '''
-                        currentAppVersion=$(cat Chart.yaml | grep appVersion | awk '{print \$2}' | tr -d '\r')"
+                        currentAppVersion=$(cat Chart.yaml | grep appVersion | awk '{print \$2}' | tr -d '\r')
                         // 计算新的 appVersion
                         newAppVersion=${scmVars.GIT_COMMIT}// 根据需要计算新的 appVersion
 
@@ -79,10 +79,6 @@ pipeline {
             }
 
     }
-
-
-
-
 
     post {
         always {
