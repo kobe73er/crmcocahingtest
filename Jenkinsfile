@@ -57,31 +57,25 @@ pipeline {
         }
 
 
-      stage('Update Helm Chart Version') {
-         steps {
-         container('docker') {
-                        // Get code from a GitHub repository
-                        git url: 'https://github.com/kobe73er/helm_repo_nestjs.git', branch: 'master',
-                        credentialsId: 'github_creds'
+        stage('Update Helm Chart Version') {
+                steps {
+                    container('docker') {
+                        // 省略部分代码...
 
-                        sh "apk add git"
-                        sh "cd nestjs && pwd && ls"
-
-                        sh "currentAppVersion = cat Chart.yaml | grep appVersion | awk '{print \$2}' | tr -d '\r'"
+                        sh "currentAppVersion=$(cat Chart.yaml | grep appVersion | awk '{print \$2}' | tr -d '\r')"
                         // 计算新的 appVersion
-                        sh "newAppVersion = scmVars.GIT_COMMIT" // 根据需要计算新的 appVersion
+                        sh "newAppVersion=\"${scmVars.GIT_COMMIT}\"" // 根据需要计算新的 appVersion
 
                         // 更新 Chart.yaml 文件中的 appVersion
-                        sh "sed -i 's/appVersion: ${currentAppVersion}/appVersion: ${newAppVersion}/' Chart.yaml"
-
-                        sh "pwd && ls"
+                        sh "sed -i 's/appVersion: \${currentAppVersion}/appVersion: \${newAppVersion}/' Chart.yaml"
 
                         // 提交更新的 Chart.yaml 文件到 GitHub 存储库
                         sh "git add Chart.yaml"
                         sh "git commit -m 'Update appVersion in Chart.yaml'"
                         sh "git push origin master"
-               }
-               }
+                    }
+                }
+            }
 
       }
 
