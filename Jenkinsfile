@@ -70,11 +70,12 @@ pipeline {
                         cd nestjs && pwd && ls
                         currentAppVersion=$(cat Chart.yaml | grep appVersion | awk '{print \$2}' | tr -d '\r')
 
-                        newAppVersion=scmVars.GIT_COMMIT
+                        newAppVersion=${scmVars.GIT_COMMIT}
 
                         sed -i 's/appVersion: \${currentAppVersion}/appVersion: \${newAppVersion}/' Chart.yaml
 
                         apk add git
+                        git config --global --add safe.directory /home/jenkins/agent/workspace/nestjs_demo
 
                         git add Chart.yaml
                         git commit -m 'Update appVersion in Chart.yaml'
