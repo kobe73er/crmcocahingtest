@@ -75,7 +75,8 @@ pipeline {
 
                         echo $newAppVersion
 
-                        sed -i 's/appVersion: \${currentAppVersion}/appVersion: \${newAppVersion}/' Chart.yaml
+                        sed "s/appVersion:.*/appVersion: $newAppVersion/" Chart.yaml > Chart.yaml.tmp
+                        mv Chart.yaml.tmp Chart.yaml
 
 
 
