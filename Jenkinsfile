@@ -65,6 +65,7 @@ pipeline {
                         credentialsId: 'github_creds'
 
                         sh "apk add git"
+                        sh "cd nestjs"
 
                         // 获取当前的 appVersion
                         sh "cat Chart.yaml | grep appVersion | awk '{print \$2}' | tr -d '\r'".trim()
