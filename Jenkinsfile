@@ -62,15 +62,18 @@ pipeline {
         stage('Update Helm Chart Version') {
                 steps {
                     container('docker') {
+                        script{
 
                         git url: 'https://github.com/kobe73er/helm_repo_nestjs.git', branch: 'master',
                         credentialsId: 'github_creds'
 
+                        def newAppVersion = scmVars.GIT_COMMIT // 根据需要计算新的 appVersion
 
                         sh '''
                         cd nestjs && pwd && ls
                         currentAppVersion=$(cat Chart.yaml | grep appVersion | awk '{print \$2}' | tr -d '\r')
-                        newAppVersion=$commitHash
+                        // 计算新的 appVersion
+
 
                         sed -i 's/appVersion: \${currentAppVersion}/appVersion: \${newAppVersion}/' Chart.yaml
 
@@ -85,6 +88,7 @@ pipeline {
                         git commit -m 'Update appVersion in Chart.yaml'
                         git push origin master
                         '''
+                    }
                     }
                 }
             }
