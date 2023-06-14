@@ -66,10 +66,10 @@ pipeline {
                         sh "apk add git"
 
                         // 获取当前的 appVersion
-                        def currentAppVersion = sh(returnStdout: true, script: "cat Chart.yaml | grep appVersion | awk '{print \$2}' | tr -d '\r'").trim()
+                        sh "cat Chart.yaml | grep appVersion | awk '{print \$2}' | tr -d '\r'".trim()
 
                         // 计算新的 appVersion
-                        def newAppVersion = scmVars.GIT_COMMIT // 根据需要计算新的 appVersion
+                        newAppVersion = scmVars.GIT_COMMIT // 根据需要计算新的 appVersion
 
                         // 更新 Chart.yaml 文件中的 appVersion
                         sh "sed -i 's/appVersion: ${currentAppVersion}/appVersion: ${newAppVersion}/' Chart.yaml"
