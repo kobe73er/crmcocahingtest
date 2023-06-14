@@ -73,7 +73,11 @@ pipeline {
                         cd nestjs && pwd && ls
                         currentAppVersion=$(cat Chart.yaml | grep appVersion | awk '{print \$2}' | tr -d '\r')
 
+                        echo $newAppVersion
+
                         sed -i 's/appVersion: \${currentAppVersion}/appVersion: \${newAppVersion}/' Chart.yaml
+
+
 
                         cat Chart.yaml
 
