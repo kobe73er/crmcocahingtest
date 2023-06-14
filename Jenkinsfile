@@ -1,4 +1,5 @@
 def scmVars
+def commitHash
 pipeline {
     environment {
         DOCKER_KEY = credentials('ecr_token')
@@ -49,7 +50,8 @@ pipeline {
                           ])
 
 
-                          def commitHash = scmVars.GIT_COMMIT
+                          commitHash = scmVars.GIT_COMMIT
+
                           echo "Commit Hash: ${commitHash}"
                     }
                 }
@@ -68,8 +70,7 @@ pipeline {
                         sh '''
                         cd nestjs && pwd && ls
                         currentAppVersion=$(cat Chart.yaml | grep appVersion | awk '{print \$2}' | tr -d '\r')
-                        echo $scmVars.GIT_COMMIT
-                        newAppVersion=scmVars.GIT_COMMIT
+                        newAppVersion=$commitHash
 
                         sed -i 's/appVersion: \${currentAppVersion}/appVersion: \${newAppVersion}/' Chart.yaml
 
