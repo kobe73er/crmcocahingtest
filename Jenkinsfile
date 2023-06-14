@@ -74,6 +74,8 @@ pipeline {
 
                         sed -i 's/appVersion: \${currentAppVersion}/appVersion: \${newAppVersion}/' Chart.yaml
 
+                        cat Chart.yaml
+
                         apk add git
                         git config --global --add safe.directory /home/jenkins/agent/workspace/nestjs_demo
 
