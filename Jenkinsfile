@@ -69,7 +69,7 @@ pipeline {
                         cd nestjs && pwd && ls
                         currentAppVersion=$(cat Chart.yaml | grep appVersion | awk '{print \$2}' | tr -d '\r')
 
-                        newAppVersion=${scmVars.GIT_COMMIT}
+                        newAppVersion=scmVars.GIT_COMMIT
 
                         sed -i 's/appVersion: \${currentAppVersion}/appVersion: \${newAppVersion}/' Chart.yaml
 
