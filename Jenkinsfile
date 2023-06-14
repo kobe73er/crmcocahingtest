@@ -59,6 +59,7 @@ pipeline {
 
       stage('Update Helm Chart Version') {
          steps {
+         container('docker') {
                         // Get code from a GitHub repository
                         git url: 'https://github.com/kobe73er/crmcocahingtest.git', branch: 'master',
                         credentialsId: 'github_creds'
@@ -80,6 +81,7 @@ pipeline {
                         sh "git add Chart.yaml"
                         sh "git commit -m 'Update appVersion in Chart.yaml'"
                         sh "git push origin master"
+               }
                }
 
       }
