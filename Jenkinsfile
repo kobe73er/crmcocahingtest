@@ -77,6 +77,8 @@ pipeline {
                         apk add git
                         git config --global --add safe.directory /home/jenkins/agent/workspace/nestjs_demo
 
+                        git config --global user.email "kobe73er@gmail.com"
+                        git config --global user.name "kobe73er"
                         git add Chart.yaml
                         git commit -m 'Update appVersion in Chart.yaml'
                         git push origin master
