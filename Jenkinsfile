@@ -83,12 +83,13 @@ pipeline {
 
                           sh "pwd && ls"
 
+                          sh "git config --global --add safe.directory /home/jenkins/agent/workspace/nestjs_demo"
+
                           sh "git status"
 
                           sh "git config credential.username ${USERNAME}"
                           sh "git config credential.helper '!echo password=${PASSWORD}; echo'"
 
-                          sh "git config --global --add safe.directory /home/jenkins/agent/workspace/nestjs_demo"
                           sh "git config --global user.email \"kobe73er@gmail.com\" "
                           sh "git config --global user.name \"kobe73er\" "
 
