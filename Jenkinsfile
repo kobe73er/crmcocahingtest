@@ -73,6 +73,8 @@ pipeline {
 
                         sed -i 's/appVersion: \${currentAppVersion}/appVersion: \${newAppVersion}/' Chart.yaml
 
+                        apk add git
+
                         git add Chart.yaml
                         git commit -m 'Update appVersion in Chart.yaml'
                         git push origin master
