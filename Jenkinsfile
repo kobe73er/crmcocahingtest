@@ -61,7 +61,6 @@ pipeline {
                 steps {
                     container('docker') {
 
-                        // Get code from a GitHub repository
                         git url: 'https://github.com/kobe73er/helm_repo_nestjs.git', branch: 'master',
                         credentialsId: 'github_creds'
 
@@ -69,13 +68,11 @@ pipeline {
                         sh '''
                         cd nestjs && pwd && ls
                         currentAppVersion=$(cat Chart.yaml | grep appVersion | awk '{print \$2}' | tr -d '\r')
-                        // 计算新的 appVersion
-                        newAppVersion=${scmVars.GIT_COMMIT}// 根据需要计算新的 appVersion
 
-                        // 更新 Chart.yaml 文件中的 appVersion
+                        newAppVersion=${scmVars.GIT_COMMIT}
+
                         sed -i 's/appVersion: \${currentAppVersion}/appVersion: \${newAppVersion}/' Chart.yaml
 
-                        // 提交更新的 Chart.yaml 文件到 GitHub 存储库
                         git add Chart.yaml
                         git commit -m 'Update appVersion in Chart.yaml'
                         git push origin master
