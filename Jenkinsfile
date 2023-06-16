@@ -111,6 +111,10 @@ pipeline {
                 sh 'docker logout'
             }
             slackSend (color: "good", channel: "${SLACK_CHANNEL}", message: "${currentBuild.result}: Job '${currentBuild.projectName} [Build #${currentBuild.id}]' (${currentBuild.absoluteUrl}) ")
+
+            sh '''
+            echo "image id: " scmVars.GIT_COMMIT
+            '''
         }
     }
 }
