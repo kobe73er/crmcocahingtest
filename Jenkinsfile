@@ -5,6 +5,7 @@ pipeline {
         DOCKER_KEY = credentials('ecr_token')
         K8S_KUBECONFIG = 'k8s-dev'
         AWS_REGION = 'us-east-2'
+        AWS_ACCOUNT_ID = '114018177393'
     }
 
     agent {
@@ -54,6 +55,51 @@ pipeline {
 
                           echo "Commit Hash: ${commitHash}"
                     }
+                }
+            }
+        }
+
+         stage('Build-Docker-Image') {
+                    steps {
+                        container('docker') {
+                            sh '''
+                            docker build -t nestjs-docker:''' + scmVars.GIT_COMMIT + ''' .
+                            '''
+                        }
+                    }
+                }
+
+         stage('Login-Into-Docker') {
+                steps {
+                    container('docker') {
+                        sh '''
+                        apk add --no-cache aws
+
+                        aws ecr get-login-password - region ${AWST_REGION} | docker login - username AWS - password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
+                        '''
+                    }
+                }
+            }
+
+
+        stage('Build-Tag') {
+            steps {
+                container('docker') {
+                    sh '''
+                    docker tag nestjs-docker:''' + scmVars.GIT_COMMIT + ''' 114018177393.dkr.ecr.us-east-2.amazonaws.com/nestjs-docker:''' + scmVars.GIT_COMMIT + '''
+                    docker tag nestjs-docker:''' + scmVars.GIT_COMMIT + ''' 114018177393.dkr.ecr.us-east-2.amazonaws.com/nestjs-docker:latest
+                    '''
+                }
+            }
+        }
+
+        stage('Push-Images-Docker-to-AWS-ECR') {
+            steps {
+                container('docker') {
+                    sh '''
+                    docker push 114018177393.dkr.ecr.us-east-2.amazonaws.com/nestjs-docker:''' + scmVars.GIT_COMMIT + '''
+                    docker push 114018177393.dkr.ecr.us-east-2.amazonaws.com/nestjs-docker:latest
+                    '''
                 }
             }
         }
