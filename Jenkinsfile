@@ -73,10 +73,7 @@ pipeline {
                 steps {
                     container('docker') {
                         sh '''
-                        apk add --no-cache aws-cli
-
-                        aws ecr get-login-password --region ${AWST_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
-
+                        echo "${DOCKER_KEY}" | docker login --username AWS --password-stdin 114018177393.dkr.ecr.us-east-2.amazonaws.com
                         '''
                     }
                 }
