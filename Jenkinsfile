@@ -6,6 +6,7 @@ pipeline {
         K8S_KUBECONFIG = 'k8s-dev'
         AWS_REGION = 'us-east-2'
         AWS_ACCOUNT_ID = '114018177393'
+        SLACK_CHANNEL = "#jenkins-job-notification"
     }
 
     agent {
@@ -103,11 +104,13 @@ pipeline {
         }
     }
 
+
     post {
         always {
             container('docker') {
                 sh 'docker logout'
             }
+            slackSend (color: "good", channel: "${SLACK_CHANNEL}", message: "${currentBuild.result}: Job '${currentBuild.projectName} [Build #${currentBuild.id}]' (${currentBuild.absoluteUrl}) ")
         }
     }
 }
