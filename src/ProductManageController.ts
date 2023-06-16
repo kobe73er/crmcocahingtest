@@ -35,6 +35,11 @@ export class ProductManageController {
     return "all6";
   }
 
+  @Get("/all7")
+  getAllProducts7(): string {
+    return "all7";
+  }
+
   @Get("/healthcheck")
   healthCheck(): string {
     return "healthy";
