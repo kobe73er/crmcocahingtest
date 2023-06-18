@@ -121,7 +121,7 @@ pipeline {
 
 
 
-                                newAppVersion=scmVars.GIT_COMMIT
+                                newAppVersion='''scmVars.GIT_COMMIT'''
                                 echo $newAppVersion
 
 
@@ -140,7 +140,7 @@ pipeline {
                                 git add .
                                 git commit -m 'Update appVersion in Chart.yaml'
                                 git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/${GIT_USERNAME}/helm_repo_nestjs.git HEAD:master
-                          '''
+                                '''
                           }
                       }
                   }
