@@ -53,7 +53,7 @@ pipeline {
                                 git url: 'https://github.com/kobe73er/helm_repo_nestjs.git', branch: 'master',
                                 credentialsId: 'github_creds'
 
-                                def newAppVersion = ${env.BUILD_NUMBER}
+                                def newAppVersion = abcd
 
                                 sh '''
                                 cd nestjs && pwd && ls
