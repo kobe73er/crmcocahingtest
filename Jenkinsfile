@@ -121,7 +121,7 @@ pipeline {
 
 
 
-                                newAppVersion='''scmVars.GIT_COMMIT'''
+                                newAppVersion=''' + scmVars.GIT_COMMIT'''
                                 echo $newAppVersion
 
 
