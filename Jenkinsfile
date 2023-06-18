@@ -121,8 +121,8 @@ pipeline {
 
 
 
-                                 newAppVersion=${env.BUILD_NUMBER}
-                                 echo $newAppVersion
+                                newAppVersion=scmVars.GIT_COMMIT
+                                echo $newAppVersion
 
 
                                 sed "s/appVersion:.*/appVersion: $newAppVersion/" Chart.yaml > Chart.yaml.tmp
