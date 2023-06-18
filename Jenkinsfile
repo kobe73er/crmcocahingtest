@@ -73,7 +73,7 @@ pipeline {
                                 git config --global user.name "kobe73er"
                                 git add .
                                 git commit -m 'Update appVersion in Chart.yaml'
-                                git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/${GIT_USERNAME}/helm_repo_nestjs.git HEAD:main
+                                git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/${GIT_USERNAME}/helm_repo_nestjs.git HEAD:master
                           '''
                           }
                       }
