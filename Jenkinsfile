@@ -119,10 +119,7 @@ pipeline {
                                 currentAppVersion=$(cat Chart.yaml | grep appVersion | awk '{print \$2}' | tr -d '\r')
 
 
-                                scmVars = checkout([$class: 'GitSCM',
-                                    branches: [[name: 'master']],
-                                    userRemoteConfigs: [[url: 'https://github.com/kobe73er/crmcocahingtest.git']]
-                                ])
+
 
                                  def newAppVersion = scmVars.GIT_COMMIT
                                  echo $newAppVersion
