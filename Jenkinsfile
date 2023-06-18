@@ -19,9 +19,6 @@ pipeline {
                   namespace: jenkins
                 spec:
                   containers:
-                  - name: kubectl
-                    image: bitnami/kubectl
-                    command: ["/bin/sh", "-c", "while true; do sleep 30; done"]
                   - name: docker
                     image: docker:dind
                     securityContext:
@@ -29,9 +26,6 @@ pipeline {
                     volumeMounts:
                       - name: docker-socket
                         mountPath: /var/run/docker-host.sock
-                  - name: git
-                    image: alpine/git
-                    command: ["/bin/sh", "-c", "while true; do sleep 30; done"]
                   volumes:
                     - name: docker-socket
                       hostPath:
@@ -50,7 +44,6 @@ pipeline {
                                             branches         : [[name: 'master']],
                                             userRemoteConfigs: [[url: 'https://github.com/kobe73er/crmcocahingtest.git']]
                         ])
-
                     }
                 }
             }
@@ -76,7 +69,6 @@ pipeline {
             }
         }
 
-
         stage('Build-Tag') {
             steps {
                 container('docker') {
@@ -99,8 +91,7 @@ pipeline {
             }
         }
 
-
-        stage('Update Helm Chart Version') {
+        stage('Update-Helm-Chart-Version') {
             steps {
                 container('docker') {
                     script {
