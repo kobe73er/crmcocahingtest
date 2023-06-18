@@ -1,5 +1,5 @@
 def scmVars
-def commitHash
+
 pipeline {
     environment {
         DOCKER_KEY = credentials('ecr_token')
@@ -42,43 +42,39 @@ pipeline {
 
     stages {
 
-       stage('Clone') {
+        stage('Clone') {
             steps {
                 container('docker') {
                     script {
-                          scmVars = checkout([$class: 'GitSCM',
-                              branches: [[name: 'master']],
-                              userRemoteConfigs: [[url: 'https://github.com/kobe73er/crmcocahingtest.git']]
-                          ])
+                        scmVars = checkout([$class           : 'GitSCM',
+                                            branches         : [[name: 'master']],
+                                            userRemoteConfigs: [[url: 'https://github.com/kobe73er/crmcocahingtest.git']]
+                        ])
 
-
-                          commitHash = scmVars.GIT_COMMIT
-
-                          echo "Commit Hash: ${commitHash}"
                     }
                 }
             }
         }
 
-         stage('Build-Docker-Image') {
-                    steps {
-                        container('docker') {
-                            sh '''
+        stage('Build-Docker-Image') {
+            steps {
+                container('docker') {
+                    sh '''
                             docker build -t nestjs-docker:''' + scmVars.GIT_COMMIT + ''' .
                             '''
-                        }
-                    }
-                }
-
-         stage('Login-Into-Docker') {
-                steps {
-                    container('docker') {
-                        sh '''
-                        echo "${DOCKER_KEY}" | docker login --username AWS --password-stdin 114018177393.dkr.ecr.us-east-2.amazonaws.com
-                        '''
-                    }
                 }
             }
+        }
+
+        stage('Login-Into-Docker') {
+            steps {
+                container('docker') {
+                    sh '''
+                        echo "${DOCKER_KEY}" | docker login --username AWS --password-stdin 114018177393.dkr.ecr.us-east-2.amazonaws.com
+                        '''
+                }
+            }
+        }
 
 
         stage('Build-Tag') {
@@ -105,16 +101,16 @@ pipeline {
 
 
         stage('Update Helm Chart Version') {
-                  steps {
-                      container('docker') {
-                          script{
-                               withCredentials([usernamePassword(credentialsId: 'github_creds', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+            steps {
+                container('docker') {
+                    script {
+                        withCredentials([usernamePassword(credentialsId: 'github_creds', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
 
-                                git url: 'https://github.com/kobe73er/helm_repo_nestjs.git', branch: 'master',
-                                credentialsId: 'github_creds'
+                            git url: 'https://github.com/kobe73er/helm_repo_nestjs.git', branch: 'master',
+                                    credentialsId: 'github_creds'
 
 
-                                sh '''
+                            sh '''
                                 cd nestjs && pwd && ls
                                 currentAppVersion=$(cat Chart.yaml | grep appVersion | awk '{print \$2}' | tr -d '\r')
 
@@ -141,11 +137,11 @@ pipeline {
                                 git commit -m 'Update appVersion in Chart.yaml'
                                 git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/${GIT_USERNAME}/helm_repo_nestjs.git HEAD:master
                                 '''
-                          }
-                      }
-                  }
-              }
-              }
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 
