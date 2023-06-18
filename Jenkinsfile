@@ -54,7 +54,7 @@ pipeline {
                 container('docker') {
                     sh '''
                             docker build -t nestjs-docker:''' + scmVars.GIT_COMMIT + ''' .
-                            '''
+                       '''
                 }
             }
         }
