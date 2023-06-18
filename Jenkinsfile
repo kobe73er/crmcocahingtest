@@ -42,6 +42,66 @@ pipeline {
 
     stages {
 
+       stage('Clone') {
+            steps {
+                container('docker') {
+                    script {
+                          scmVars = checkout([$class: 'GitSCM',
+                              branches: [[name: 'master']],
+                              userRemoteConfigs: [[url: 'https://github.com/kobe73er/crmcocahingtest.git']]
+                          ])
+
+
+                          commitHash = scmVars.GIT_COMMIT
+
+                          echo "Commit Hash: ${commitHash}"
+                    }
+                }
+            }
+        }
+
+         stage('Build-Docker-Image') {
+                    steps {
+                        container('docker') {
+                            sh '''
+                            docker build -t nestjs-docker:''' + scmVars.GIT_COMMIT + ''' .
+                            '''
+                        }
+                    }
+                }
+
+         stage('Login-Into-Docker') {
+                steps {
+                    container('docker') {
+                        sh '''
+                        echo "${DOCKER_KEY}" | docker login --username AWS --password-stdin 114018177393.dkr.ecr.us-east-2.amazonaws.com
+                        '''
+                    }
+                }
+            }
+
+
+        stage('Build-Tag') {
+            steps {
+                container('docker') {
+                    sh '''
+                    docker tag nestjs-docker:''' + scmVars.GIT_COMMIT + ''' 114018177393.dkr.ecr.us-east-2.amazonaws.com/nestjs-docker:''' + scmVars.GIT_COMMIT + '''
+                    docker tag nestjs-docker:''' + scmVars.GIT_COMMIT + ''' 114018177393.dkr.ecr.us-east-2.amazonaws.com/nestjs-docker:latest
+                    '''
+                }
+            }
+        }
+
+        stage('Push-Images-Docker-to-AWS-ECR') {
+            steps {
+                container('docker') {
+                    sh '''
+                    docker push 114018177393.dkr.ecr.us-east-2.amazonaws.com/nestjs-docker:''' + scmVars.GIT_COMMIT + '''
+                    docker push 114018177393.dkr.ecr.us-east-2.amazonaws.com/nestjs-docker:latest
+                    '''
+                }
+            }
+        }
 
 
         stage('Update Helm Chart Version') {
@@ -59,7 +119,7 @@ pipeline {
                                 currentAppVersion=$(cat Chart.yaml | grep appVersion | awk '{print \$2}' | tr -d '\r')
 
 
-                                sed "s/appVersion:.*/appVersion: abcd/" Chart.yaml > Chart.yaml.tmp
+                                sed "s/appVersion:.*/appVersion: scmVars.GIT_COMMIT/" Chart.yaml > Chart.yaml.tmp
                                 mv Chart.yaml.tmp Chart.yaml
 
 
