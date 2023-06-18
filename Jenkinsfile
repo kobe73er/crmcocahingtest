@@ -121,7 +121,7 @@ pipeline {
 
 
 
-                                 newAppVersion=$scmVars.GIT_COMMIT
+                                 newAppVersion=${env.BUILD_NUMBER}
                                  echo $newAppVersion
 
 
