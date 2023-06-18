@@ -7,6 +7,9 @@ pipeline {
         AWS_REGION = 'us-east-2'
         AWS_ACCOUNT_ID = '114018177393'
         SLACK_CHANNEL = "#jenkins-job-notification"
+
+        AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
+        AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
     }
 
     agent {
@@ -36,13 +39,12 @@ pipeline {
 
     stages {
 
-
         stage('Login-AWS') {
             steps {
                 container('docker') {
                     sh '''
-                       export AWS_ACCESS_KEY_ID=AKIARVDADKFYUAZFZ5EV
-                       export AWS_SECRET_ACCESS_KEY=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
+                       export AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+                       export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
                        
                        apk add --no-cache python3 py3-pip && \\
                        pip3 install --upgrade pip && \\
@@ -141,6 +143,16 @@ pipeline {
                     }
                 }
             }
+        }
+    }
+
+    post {
+        always {
+            container('docker') {
+                sh 'docker logout'
+            }
+            slackSend(color: "good", channel: "${SLACK_CHANNEL}", message: "${currentBuild.result}: Job '${currentBuild.projectName} [Build #${currentBuild.id}]' (${currentBuild.absoluteUrl}) ")
+
         }
     }
 }
