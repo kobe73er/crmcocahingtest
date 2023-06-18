@@ -119,7 +119,12 @@ pipeline {
                                 currentAppVersion=$(cat Chart.yaml | grep appVersion | awk '{print \$2}' | tr -d '\r')
 
 
-                                sed "s/appVersion:.*/appVersion: scmVars.GIT_COMMIT/" Chart.yaml > Chart.yaml.tmp
+                                scmVars = checkout([$class: 'GitSCM',
+                                    branches: [[name: 'master']],
+                                    userRemoteConfigs: [[url: 'https://github.com/kobe73er/crmcocahingtest.git']]
+                                ])
+
+                                sed "s/appVersion:.*/appVersion: ${scmVars.GIT_COMMIT}/" Chart.yaml > Chart.yaml.tmp
                                 mv Chart.yaml.tmp Chart.yaml
 
 
