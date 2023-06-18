@@ -124,7 +124,11 @@ pipeline {
                                     userRemoteConfigs: [[url: 'https://github.com/kobe73er/crmcocahingtest.git']]
                                 ])
 
-                                sed "s/appVersion:.*/appVersion: ${scmVars.GIT_COMMIT}/" Chart.yaml > Chart.yaml.tmp
+                                 def newAppVersion = scmVars.GIT_COMMIT
+                                 echo $newAppVersion
+
+
+                                sed "s/appVersion:.*/appVersion: $newAppVersion/" Chart.yaml > Chart.yaml.tmp
                                 mv Chart.yaml.tmp Chart.yaml
 
 
