@@ -36,6 +36,24 @@ pipeline {
 
     stages {
 
+
+        stage('Login-AWS') {
+            steps {
+                container('docker') {
+                    sh '''
+                       export AWS_ACCESS_KEY_ID=AKIARVDADKFYUAZFZ5EV
+                       export AWS_SECRET_ACCESS_KEY=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
+                       
+                       apk add --no-cache python3 py3-pip && \\
+                       pip3 install --upgrade pip && \\
+                       pip3 install awscli
+                       
+                       aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 114018177393.dkr.ecr.us-east-2.amazonaws.com
+                       '''
+                }
+            }
+        }
+
         stage('Clone') {
             steps {
                 container('docker') {
