@@ -108,7 +108,7 @@ pipeline {
                   steps {
                       container('docker') {
                           script{
-                               withCredentials([usernamePassword(credentialsId: 'github', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+                               withCredentials([usernamePassword(credentialsId: 'github_creds', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
 
                                 git url: 'git@github.com:kobe73er/helm_repo_nestjs.git', branch: 'master',
                                 credentialsId: 'github_creds'
