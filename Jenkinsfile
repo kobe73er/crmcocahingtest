@@ -2,10 +2,6 @@ def scmVars
 
 pipeline {
     environment {
-        DOCKER_KEY = credentials('ecr_token')
-        K8S_KUBECONFIG = 'k8s-dev'
-        AWS_REGION = 'us-east-2'
-        AWS_ACCOUNT_ID = '114018177393'
         SLACK_CHANNEL = "#jenkins-job-notification"
 
         AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
@@ -39,7 +35,7 @@ pipeline {
 
     stages {
 
-        stage('Login-AWS') {
+        stage('Login-Related-Systems') {
             steps {
                 container('docker') {
                     sh '''
@@ -148,11 +144,7 @@ pipeline {
 
     post {
         always {
-            container('docker') {
-                sh 'docker logout'
-            }
             slackSend(color: "good", channel: "${SLACK_CHANNEL}", message: "${currentBuild.result}: Job '${currentBuild.projectName} [Build #${currentBuild.id}]' (${currentBuild.absoluteUrl}) ")
-
         }
     }
 }
